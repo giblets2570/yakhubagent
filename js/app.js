@@ -19,13 +19,14 @@ app.factory("numberFactory", function($http){
 				id: -1,
 				number: -1,
 				businessname: -1,
+				address: -1,
 				agentname: agentname,
 				clientname: clientname,
 				pickedup: -1,
 				interested: -1,
 				appointment: -1,
 				lead: -1,
-				notes: -1
+				notes: -1,
 			}).success(data);
         }
     }
@@ -41,8 +42,10 @@ app.controller("RecordingsController", function($scope, $http, recordingsFactory
 });
 
 app.controller("MainController", function($scope, $http, numberFactory, recordingsFactory){
-	// $scope.showScript = true;
-	// $scope.showReview = false;
+	$scope.showScript = true;
+	$scope.showScriptNotes = false;
+
+	$scope.scriptNotes = "";
 
 	$scope.phone = "Click a phone number below!";
 	$scope.numberid = -1;
@@ -59,6 +62,7 @@ app.controller("MainController", function($scope, $http, numberFactory, recordin
 	$scope.appointment = "no";
 	$scope.lead = "no";
 	$scope.notes = "";
+	$scope.address = "";
 
 
 	$scope.called = false;
@@ -71,10 +75,17 @@ app.controller("MainController", function($scope, $http, numberFactory, recordin
         $scope.places = data;
     });
 
-    $scope.inputNumber = function(phone,id,businessname){
+    $scope.setScriptNotes = function(scriptNotes){
+    	$scope.scriptNotes = scriptNotes;
+    	console.log(scriptNotes);
+    	console.log("Sup bitch");
+    }
+
+    $scope.inputNumber = function(phone,id,businessname,address){
 		$scope.phone = phone;
 		$scope.numberid = id;
 		$scope.businessname = businessname;
+		$scope.address = address;
 		console.log($scope.numberid);
     };
     
@@ -83,7 +94,24 @@ app.controller("MainController", function($scope, $http, numberFactory, recordin
     };
 
 
-    //all the variables of the post data
+    $scope.saveScriptNotes = function(){
+    	var params = {
+    		scriptNotes: $scope.scriptNotes,
+    		agentname: agentname,
+    		clientname: clientname
+    	};
+    	$http({
+	            method :'POST',
+	            url:'endpoints/saveScriptNotes.php',
+	            data: params,
+	            headers: {'Content-Type': 'application/json'}
+	        }).success(function (data, status, headers, config) {
+	            console.log('status',status);
+	            console.log('data',status);
+	            console.log('headers',status);
+	        });
+	    console.log(hello);
+    }
 
     $scope.completeCall = function(){
     	if($scope.called == true){
@@ -97,7 +125,8 @@ app.controller("MainController", function($scope, $http, numberFactory, recordin
     			interested: $scope.interested,
     			appointment: $scope.appointment,
     			lead: $scope.lead,
-    			notes: $scope.notes
+    			notes: $scope.notes,
+    			address: $scope.address
     		};
 	    	$http({
 	            method :'POST',
@@ -128,8 +157,6 @@ app.controller("MainController", function($scope, $http, numberFactory, recordin
 	                "Agent": Agent};
 	    Twilio.Device.connect(params);
 
-		// $scope.showScript = true;
-		// $scope.showReview = false;
 		$scope.called = true;
 		$scope.canSubmit = true;
 	};
@@ -137,8 +164,6 @@ app.controller("MainController", function($scope, $http, numberFactory, recordin
 	$scope.hangUp = function(){
 		Twilio.Device.disconnectAll();
 			
- //    	$scope.showScript = false;
-	// 	$scope.showReview = true;
 	};
 
 	$scope.allPicked = function(){
@@ -163,6 +188,16 @@ app.controller("MainController", function($scope, $http, numberFactory, recordin
 		$scope.showAppoint = false;
 		$scope.showInter = false;
 		$scope.showLead = false;
+	};
+
+	$scope.showScriptNotesFunc = function(){
+		$scope.showScript = false;
+		$scope.showScriptNotes = true;
+	};
+
+	$scope.showScriptFunc = function(){
+		$scope.showScript = true;
+		$scope.showScriptNotes = false;
 	};
 
 });

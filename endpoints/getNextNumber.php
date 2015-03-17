@@ -5,9 +5,9 @@
     require_once('FirePHPCore/FirePHP.class.php');
     $firephp = FirePHP::getInstance(true);
 
-    // ini_set('display_errors',1);
-    // ini_set('display_startup_errors',1);
-    // error_reporting(0);
+    ini_set('display_errors',1);
+    ini_set('display_startup_errors',1);
+    error_reporting(0);
 
     error_reporting(E_ALL ^ E_NOTICE);
 
@@ -27,6 +27,7 @@
     $appointment = $request->appointment;
     $notes = $request->notes;
     $lead = $request->lead;
+    $address = $request->address;
 
     // echo "Hello";
 
@@ -65,7 +66,10 @@
         $firephp->log($numResults);
         $firephp->log($ID);
 
-        $sqlInsertCallNotes = "update Called set businessname='$businessname', pickedup='$pickedup', 
+        $firephp->log("id", $ID);
+        $firephp->log("number", $number);
+
+        $sqlInsertCallNotes = "update Called set businessname='$businessname', address='$address', pickedup='$pickedup', 
         interested='$interested', appointment='$appointment', lead='$lead', notes='$notes' where id='$ID'";
 
         $mysqli->query($sqlInsertCallNotes);
@@ -103,6 +107,8 @@
             $rows[] = $r;
         }
     }
+
+    $firephp->log("Next numbers",$rows);
 
     
     //Now i have to put this number in calling

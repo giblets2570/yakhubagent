@@ -54,13 +54,13 @@
 
 	$firephp->log($clientname);
 
-	$businessname = "";
+	$businessname = -1;
 	//now i need to get the businessname for this call
-	$query = $mysqli->query("select * from Numbers where number='$numberCalled'");
-	if($query){ 	
-		$row = $query->fetch_array();
-		$businessname = $row['businessname'];
-	}
+	// $query = $mysqli->query("select * from Numbers where number='$numberCalled'");
+	// if($query){ 	
+	// 	$row = $query->fetch_array();
+	// 	$businessname = $row['businessname'];
+	// }
 
 	$error = $error.$businessname;
 

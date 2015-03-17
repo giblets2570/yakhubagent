@@ -40,7 +40,7 @@
 ?>
  
 <Response>
-    <Dial callerId="<?php echo $callerId ?>" record="true" action="/agent/endpoints/storeCall.php?to=<?php echo $number?>">
+    <Dial callerId="<?php echo $callerId ?>" record="true" action="/yakhub/agent/endpoints/storeCall.php?to=<?php echo $number?>">
           <?php echo $numberOrClient ?>
     </Dial>
 </Response>

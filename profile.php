@@ -40,8 +40,17 @@
     if ($agentRows == 1){
         $agentResult = $agentquery->fetch_assoc();
         $client = $agentResult['clientname'];
-
     }
+
+    $scriptNotes = "";
+
+    $scriptNotesQuery = $mysqli->query("select * from ScriptNotes where agentname='$agent' and clientname='$client' ");
+    $scriptNotesRows = $scriptNotesQuery->num_rows;
+    if ($scriptNotesRows > 0){
+        $scriptResult = $scriptNotesQuery->fetch_assoc();
+        $scriptNotes = $scriptResult['scriptNotes'];
+    }
+
 
     $mysqli->close(); 
 
@@ -70,9 +79,8 @@
         <link rel="stylesheet" type="text/css" href="css/custom.css">
         
         <!--This is the javascript behind the site-->
-
         <!-- Custom CSS -->
-        <!-- <link href="css/simple-sidebar.css" rel="stylesheet"> -->
+        <link href="css/simple-sidebar.css" rel="stylesheet">
     </head>
     <body ng-app="yakhub">
         <nav class="navbar navbar-default" style="background: url('../Images/swirl_pattern_col.png') repeat">
@@ -84,7 +92,6 @@
                         Yak Hub Agent <?php echo $agent;?>
                     </h3>
                 </div>
-
             <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 
@@ -114,15 +121,15 @@
         <div id="wrapper" ng-controller="MainController">
 
             <!-- Sidebar -->
-            <!-- <div id="sidebar-wrapper">
+            <div id="sidebar-wrapper">
                     <ul class="sidebar-nav">
-                        <li class="sidebar-brand">
+                        <!-- <li class="sidebar-brand">
                                 <p>
                                     <?php
                                         echo $agent;
                                     ?>
                                 </p>
-                        </li>
+                        </li> -->
                         <li>
                             <a ng-click="showScriptFunc()" >
                                 <p>
@@ -131,14 +138,14 @@
                             </a>
                         </li>
                         <li>
-                            <a ng-click="showFormFunc()">
+                            <a ng-click="showScriptNotesFunc()">
                                 <p>
-                                    Show Form
+                                    Show Script Notes
                                 </p>
                             </a>
                         </li>
                     </ul>
-                </div> -->
+                </div>
             <!-- /#sidebar-wrapper -->
 
             <div class="container-fluid body-film">
@@ -165,7 +172,7 @@
                             <div>
                                 <ul>
                                     <li ng-repeat="place in places | limitTo:1"> 
-                                        {{place.businessname}}, {{place.address}} - <a ng-click="inputNumber(place.number, place.id, place.businessname)"> {{place.number}}</a> 
+                                        {{place.businessname}}, {{place.address}} - <a ng-click="inputNumber(place.number, place.id, place.businessname, place.address)"> {{place.number}}</a> 
                                     </li>
                                 </ul>
                             </div>
@@ -176,8 +183,8 @@
                                 <input type="text" id="newBusiness" name="newBusiness" ng-model="newBusiness" 
                                 aria-describedby="basic-addon1" style="font-size: 30" autocomplete="off"
                                 placeholder="Business name...">
-                                <button type="button" class="btn btn-success" ng-click="inputNumber(newNumber,0,newBusiness)"> 
-                                    Appointment/new business
+                                <button type="button" class="btn btn-success" ng-click="inputNumber(newNumber,0,newBusiness,0)"> 
+                                    New business
                                 </button>
                             </div>
 
@@ -207,16 +214,23 @@
                                 <div>
 
                                     <label for="notes">Notes:</label>
-                                    <textarea class="form-control" rows="12" id="notes" ng-model="notes"></textarea>
+                                    <textarea class="form-control" rows="10" id="notes" ng-model="notes"></textarea>
                                 </div>
                                 <button type="button" class="btn btn-primary" ng-click="completeCall()">Submit</button>
                             </form>
 
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="right_col" style="background-color:#f5f5f5">
+                    <div class="col-sm-6" ng-show='showScript'>
+                        <div class="right_col" style="background-color:#f5f5f5" >
                             <iframe src="DobeoScript.pdf" style="width:100%; height:600px;" frameborder="10"></iframe>
+                        </div>
+                    </div>
+                    <div class="col-sm-6" ng-show='showScriptNotes'>
+                        <div class="right_col" style="background-color:#f5f5f5">
+                            <label for="scriptNotes">Script Notes:</label>
+                                <textarea class="form-control" rows="12" id="scriptNotes" ng-model="scriptNotes" ng-init='setScriptNotes("<?php echo $scriptNotes; ?>")'></textarea>
+                                <button type="button" class="btn btn-primary" ng-click="saveScriptNotes()">Save</button>
                         </div>
                     </div>
                 </div>
@@ -239,9 +253,15 @@
             console.log(clientname);
         </script>
 
-        <!-- Controller Impotrs -->
+        <!-- Controller Impoters -->
         <!--<script type="text/javascript" src="js/main-controller.js"></script>-->
 
+        <!-- javascript to ask if they want to leave the page -->
+        <script type="text/javascript">
+            window.onbeforeunload = function() {
+                return "Data will be lost if you leave the page, are you sure?";
+            };
+        </script>
 
         <!-- Javascript behind twilio -->
         <script type="text/javascript">
@@ -288,6 +308,8 @@
                 viewController.hangUp();
             }
         </script>
+
+
 
     </body>
 </html>
