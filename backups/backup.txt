@@ -1,0 +1,1 @@
+mysqldump -uroot -p --databases yakhubAgents > backup.sql

@@ -1,0 +1,161 @@
+body { background: #f5f5f5 !important
+}
+
+.form_container {
+	max-width: 450px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 38px;
+	padding-bottom: 38px;
+	padding-right: 40px;
+	padding-left: 40px;
+}
+
+/* HACK - getting forms looking better */
+label.cb-label {
+	font-weight: 400 !important;
+}
+label {
+	font-family: bitter, "Open Sans" sans-serif !important;
+	font-weight: 700 !important;
+	color: #4d4d4d !important;
+}
+input {
+	font-family: "Open Sans", sans-serif !important;
+	font-size: 11px !important;
+}
+textarea.form-control {
+    resize: vertical;
+    overflow: auto;
+	margin-bottom: 15px !important;
+}
+/* END HACK */
+
+.stuff-wrapper {
+	padding-top: 110px;
+	padding-bottom: 110px;
+}
+
+.logo {
+	margin-left: auto;
+	margin-right: auto;
+	width: 300px;
+}
+img.logo_img {
+	margin-top: -10px;
+	margin-right: 5px;
+}
+h1.logo-text {
+	font-family: 'Dosis', sans-serif;
+	font-weight: 500;
+	font-size: 55px;
+	color: #fefefe;
+}
+
+h3.logo-text {
+	font-family: 'Dosis', sans-serif;
+	font-weight: 500;
+	font-size: 30px;
+	color: #fefefe;
+}
+.sub_header {
+	width: 260px;
+	margin-right: auto;
+	margin-left: auto;
+	border-top: 1px dashed #4b4b4b;
+	border-bottom: 1px dashed #4b4b4b;
+	margin-top: 15px;
+}
+h1, h2, h3, h4, h5, h6 {
+font-family: 'Bitter', sans-serif;
+font-weight: 700;
+	color: #4b4b4b;	
+}
+
+/* HACK - to get the columns 
+to be equal height */
+.row{
+    overflow: hidden; 
+}
+[class*="col-"]{
+    margin-bottom: -99999px;
+    padding-bottom: 99999px;
+}
+/* END HACK */
+
+.left_col {
+	background: url("../Images/swirl_pattern_col.png") repeat;
+	background-size: 175px;
+	margin-right: -15px;
+	margin-left: -15px;	
+	height: auto;
+	
+	/* HACK - to get the columns 
+	to be equal height */
+	margin-bottom: -99999px;
+	padding-bottom: 99999px;
+}
+
+.right_col {
+	background-color: #ffffff;
+	margin-right: -15px;
+	margin-left: -15px;
+	height: auto;
+	
+	/* HACK - to get the columns 
+	to be equal height */
+	margin-bottom: -99999px;
+	padding-bottom: 99999px;
+}
+
+.p_box {
+	width: 310px;
+	margin-right: auto;
+	margin-left: auto;
+	padding-top: 15px;
+}
+p.body {
+	color: #ffffff;
+	font-family: merriweather, "Open Sans", sans-serif;
+	font-weight: 500;
+	line-height: 24px;
+}
+
+.row2-header {
+	margin: 50px auto 35px;
+	width: 300px;
+}
+.row-custom {
+	margin-left: auto;
+	margin-right: auto;
+	max-width: 750px;
+	margin-bottom: 50px;
+}
+p.features {
+	color: #525252;
+	font-family: merriweather, "Open Sans", sans-serif;
+	font-weight: 500;
+	line-height: 24px;
+}
+
+/*Toms additions*/
+
+.outer {
+    display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto; 
+    width: /*whatever width you want*/;
+}
+
+
