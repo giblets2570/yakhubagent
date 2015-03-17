@@ -109,6 +109,11 @@
                             Calls
                     </li>
                     <li>
+                        <a ng-click="allCalls()">
+                            All
+                        </a>
+                    </li>
+                    <li>
                         <a ng-click="allPicked()">
                             Picked Up
                         </a>
@@ -131,6 +136,30 @@
                 </ul>
             </div>
             <!-- /#sidebar-wrapper -->
+            <div class="container-fluid body-film">
+                <div class="row" ng-show="showAll">
+                    <div class="col-sm-12">
+                        <div class="right_col" style="background-color:#f5f5f5">
+                            <ol>
+                                <li ng-repeat="call in calls">
+                                    <p>
+                                        <a href={{call.recordingURL}}> {{call.recordingURL}} </a>
+                                    </p>                                
+                                    <p>
+                                        Time - {{call.timeCreated}} -:- Recording length - {{call.recordingDuration}}
+                                    </p>
+                                    <p>
+                                        Businessname - {{call.businessname}} -:- Number - {{call.number}}
+                                    </p>
+                                    <p>
+                                        Notes - {{call.notes}}
+                                    </p>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <div class="container-fluid body-film">
                 <div class="row" ng-show="showPicked">

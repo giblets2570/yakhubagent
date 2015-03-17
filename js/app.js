@@ -50,7 +50,8 @@ app.controller("MainController", function($scope, $http, numberFactory, recordin
 	$scope.phone = "Click a phone number below!";
 	$scope.numberid = -1;
 
-	$scope.showPicked = true;
+	$scope.showAll = true;
+	$scope.showPicked = false;
 	$scope.showAppoint = false;
 	$scope.showInter = false;
 	$scope.showLead = false;
@@ -166,6 +167,11 @@ app.controller("MainController", function($scope, $http, numberFactory, recordin
 			
 	};
 
+	$scope.allCalls = function(){
+		$scope.allNone();
+		$scope.showAll = true;
+	};
+
 	$scope.allPicked = function(){
 		$scope.allNone();
 		$scope.showPicked = true;
@@ -184,6 +190,7 @@ app.controller("MainController", function($scope, $http, numberFactory, recordin
 		$scope.showLead = true;
 	};
 	$scope.allNone = function(){
+		$scope.showAll = false;
 		$scope.showPicked = false;
 		$scope.showAppoint = false;
 		$scope.showInter = false;
