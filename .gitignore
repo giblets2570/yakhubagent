@@ -1,3 +1,4 @@
 Services/
-vars.php
-*.sql
+db.php
+*.pdf
+*.json
