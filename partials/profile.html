@@ -1,0 +1,137 @@
+<nav class="navbar navbar-default" style="background: url('Images/swirl_pattern_col.png') repeat">
+    <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">          
+            <!-- <a class="navbar-brand"></a>  -->
+            <h3 class= "text-center logo-text">
+                <img class="logo_img" src="Images/logo.png" width="32px"/>
+                Yak Hub Agent {{username}}
+            </h3> 
+        </div>
+
+        
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="" ng-click='showScriptFunc()'>Script</a></li>
+                <li><a href="" ng-click='showScriptNotesFunc()'>Notes</a></li>
+                <li><a href="" ng-click='showAppointmentsFunc()'>Appointments</a></li>
+                <li><a href="" ng-click='showStatsFunc()'>Stats</a></li>
+                <li><a href="">Calls</a></li>
+                <li class="active"><a ng-click='logout()'>Logout</a></li>
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </div><!-- /.container-fluid -->
+</nav>
+
+<div id="wrapper">
+
+    <div class="container-fluid body-film">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="right_col" style="background-color:#f5f5f5">
+
+                    <div class="form-group">
+                        <label for="number">Number</label>
+                        <input type="text" class="form-control" id="number" name="number" ng-model="phoneNumber"
+                        aria-describedby="basic-addon1" style="font-size: 30" autocomplete="off">
+                    </div>
+
+                    <button type="button" class="btn btn-success" ng-click="call()">
+                        Call
+                    </button>
+
+                    <button type="button" class="btn btn-danger" ng-click="hangUp()">
+                        Hangup
+                    </button>
+                 
+                    <div>{{ log }}</div>
+
+                    <div>
+                        <ul>
+                            <li ng-repeat="place in numbers | limitTo:1"> 
+                                {{place.businessname}}, {{place.address}} - <a ng-click="inputNumber(place.number, place.businessname, place.address)"> {{place.number}}</a> 
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <input type="text" id="newNumber" name="newNumber" ng-model="newNumber" 
+                        aria-describedby="basic-addon1" style="font-size: 30" autocomplete="off"
+                        placeholder="Number...">
+                        <input type="text" id="newBusiness" name="newBusiness" ng-model="newBusiness" 
+                        aria-describedby="basic-addon1" style="font-size: 30" autocomplete="off"
+                        placeholder="Business name...">
+                        <input type="text" id="newAddress" name="newAddress" ng-model="newAddress" 
+                        aria-describedby="basic-addon1" style="font-size: 30" autocomplete="off"
+                        placeholder="Address...">
+
+                        <button type="button" class="btn btn-success" ng-click="inputNumber(newNumber,newBusiness,newAddress)"> 
+                            New business
+                        </button>
+                    </div>
+
+                    <form name="myForm" >
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <tt>Picked up:</tt><br/>
+                                <input type="radio" ng-model="picked" value="yes"> Yes <br/>
+                                <input type="radio" ng-model="picked" value="no"> No <br/><br/>
+                            </div>
+                            <div class="col-sm-3">
+                                <tt>Interested:</tt><br/>
+                                <input type="radio" ng-model="interested" value="yes"> Yes <br/>
+                                <input type="radio" ng-model="interested" value="no"> No <br/><br/>
+                            </div>
+                            <div class="col-sm-3">
+                                <tt>Appointment:</tt><br/>
+                                <input type="radio" ng-model="appointment" value="yes"> Yes <br/>
+                                <input type="radio" ng-model="appointment" value="no"> No <br/><br/>
+                            </div>
+                            <div class="col-sm-3">
+                                <tt>Lead:</tt><br/>
+                                <div class="col-sm-1">
+                                    <input type="radio" ng-model="lead" value="no"> no <br/>
+                                </div>
+                                <div class="col-sm-1">
+                                    <input type="radio" ng-model="lead" value="1"> 1 <br/>
+                                </div>
+                                <div class="col-sm-1">
+                                    <input type="radio" ng-model="lead" value="2"> 2 <br/>
+                                </div>
+                                <div class="col-sm-1">
+                                    <input type="radio" ng-model="lead" value="3"> 3 <br/>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+
+                            <label for="notes">Notes:</label>
+                            <textarea class="form-control" rows="10" id="notes" ng-model="notes"></textarea>
+                        </div>
+                        <button type="button" class="btn btn-primary" ng-click="completeCall()">Submit</button>
+                    </form>
+
+                </div>
+            </div>
+            <div class="col-sm-6" ng-show='showScript'>
+                <div class="right_col" style="background-color:#f5f5f5" >
+                    <iframe src="Scripts/DobeoScript.pdf" style="width:100%; height:600px;" frameborder="10"></iframe>
+                </div>
+            </div>
+            <div class="col-sm-6" ng-show='showScriptNotes'>
+                <div class="right_col" style="background-color:#f5f5f5">
+                    <label for="scriptNotes">Script Notes:</label>
+                        <textarea class="form-control" rows="12" id="scriptNotes"></textarea>
+                        <button type="button" class="btn btn-primary" ng-click="saveScriptNotes()">Save</button>
+                </div>
+            </div>
+
+            <div class="col-sm-6" ng-show='showStats'>
+                <div class="right_col" style="background-color:#f5f5f5">
+                    <h2><center>All time</center></h2>
+                </div>
+                <canvas id="income" width="200" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+</div>

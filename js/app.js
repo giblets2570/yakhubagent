@@ -1,261 +1,60 @@
-var app = angular.module("yakhub",[]);
+var yakhubApp = angular.module('yakhubAgent',['ngRoute','ngStorage','yakhubControllers']);
 
-app.factory("recordingsFactory", function($http){
-	var params = {
-	    Agent: agentname
+yakhubApp.config(['$routeProvider',function(route){
+	route.
+		when('/login',{
+			templateUrl:'partials/login.html',
+			controller: 'authCtrl'
+		}).
+        when('/profile',{
+            templateUrl: 'partials/profile.html',
+            controller: 'profileCtrl'
+        }).
+		otherwise({
+			redirectTo: '/login'
+		});
+}]);
 
-	}
-	return {
-		getRecordings: function(data) {
-			$http.post('getRecordings.php',params).success(data);
-		}
-	}
-});
+yakhubApp.run(function ($rootScope, $location, $sessionStorage){
+	$rootScope.$on("$routeChangeStart", function (event, next, current) {
+        $rootScope.authenticated = false;
+        if ($sessionStorage.username) {
+            $rootScope.authenticated = true;
+            $rootScope.username = $sessionStorage.username;
+        } else {
+            var nextUrl = next.$$route.originalPath;
+            if (nextUrl == '/signup' || nextUrl == '/login') {
 
-app.factory("numberFactory", function($http){
-    return {
-        getNumbers: function(data) {
-            $http.post('endpoints/getNextNumber.php',{
-				id: -1,
-				number: -1,
-				businessname: -1,
-				address: -1,
-				agentname: agentname,
-				clientname: clientname,
-				pickedup: -1,
-				interested: -1,
-				appointment: -1,
-				lead: -1,
-				notes: -1,
-			}).success(data);
+            } else {
+                $location.path("/login");
+            }
         }
-    }
+    });
 });
 
+yakhubApp.factory("phoneFactory",['$http', function(http){
 
-app.controller("RecordingsController", function($scope, $http, recordingsFactory){
+    factory = {};
 
-	recordingsFactory.getRecordings(function(data){
-        $scope.calls = data;
-    });
-
-});
-
-app.controller("MainController", function($scope, $http, numberFactory, recordingsFactory){
-	$scope.showScript = true;
-	$scope.showScriptNotes = false;
-
-	$scope.scriptNotes = "";
-
-	$scope.phone = "Click a phone number below!";
-	$scope.numberid = -1;
-
-	$scope.showAll = true;
-	$scope.showPicked = false;
-	$scope.showAppoint = false;
-	$scope.showInter = false;
-	$scope.showLead = false;
-
-	$scope.businessname = "none";
-
-	$scope.picked = "no";
-	$scope.interested = "no";
-	$scope.appointment = "no";
-	$scope.lead = "no";
-	$scope.notes = "";
-	$scope.address = "";
-
-
-	$scope.called = false;
-
-	recordingsFactory.getRecordings(function(data){
-        $scope.calls = data;
-    });
-	
-    numberFactory.getNumbers(function(data){
-        $scope.places = data;
-    });
-
-    $scope.setScriptNotes = function(scriptNotes){
-    	$scope.scriptNotes = scriptNotes;
-    	console.log(scriptNotes);
-    	console.log("Sup bitch");
+    var postData = function(url,data,callback){
+        http({
+            method:'POST',
+            url: url,
+            data: data,
+            cache: false
+        }).success(callback);
     }
 
-    $scope.inputNumber = function(phone,id,businessname,address){
-		$scope.phone = phone;
-		$scope.numberid = id;
-		$scope.businessname = businessname;
-		$scope.address = address;
-		console.log($scope.numberid);
-    };
-    
-    $scope.check = function(){
-        console.log($scope.records);
-    };
-
-
-    $scope.saveScriptNotes = function(){
-    	var params = {
-    		scriptNotes: $scope.scriptNotes,
-    		agentname: agentname,
-    		clientname: clientname
-    	};
-    	$http({
-	            method :'POST',
-	            url:'endpoints/saveScriptNotes.php',
-	            data: params,
-	            headers: {'Content-Type': 'application/json'}
-	        }).success(function (data, status, headers, config) {
-	            console.log('status',status);
-	            console.log('data',status);
-	            console.log('headers',status);
-	        });
-	    console.log(hello);
+    factory.getNextNumber = function(data,callback){
+        postData('endpoints/getNextNumber.php',data,callback);
     }
 
-    $scope.completeCall = function(){
-    	if($scope.called == true){
-    		var params = {
-    			id:  $scope.numberid, 
-    			number: $scope.phone,
-    			businessname: $scope.businessname,
-    			agentname: agentname,
-    			clientname: clientname,
-    			pickedup: $scope.picked,
-    			interested: $scope.interested,
-    			appointment: $scope.appointment,
-    			lead: $scope.lead,
-    			notes: $scope.notes,
-    			address: $scope.address
-    		};
-	    	$http({
-	            method :'POST',
-	            url:'endpoints/getNextNumber.php',
-	            data: params,
-	            headers: {'Content-Type': 'application/json'}
-	        }).success(function (data, status, headers, config) {
-	            console.log('status',status);
-	            console.log('data',status);
-	            console.log('headers',status);
-	            $scope.places = data;
-	        });
-	       	console.log($scope.picked);
-	       	$scope.picked = "no";
-	       	$scope.interested = "no";
-			$scope.appointment = "no";
-			$scope.lead = "no";
-	       	$scope.called = false;
-	       	$scope.notes = "";
-	   	}else{
-	   		alert("You haven't called this number");
-	   	}
-    };
+    factory.twilioSetup = function(data,callback){
+        postData('endpoints/twilioSetup.php',data,callback);
+    }
 
-	$scope.call = function(){
-	    params = {"PhoneNumber": $("#number").val(),
-	                "OutgoingNumber": OutgoingNumber,
-	                "Agent": Agent};
-	    Twilio.Device.connect(params);
-
-		$scope.called = true;
-		$scope.canSubmit = true;
-	};
-
-	$scope.hangUp = function(){
-		Twilio.Device.disconnectAll();
-			
-	};
-
-	$scope.allCalls = function(){
-		$scope.allNone();
-		$scope.showAll = true;
-	};
-
-	$scope.allPicked = function(){
-		$scope.allNone();
-		$scope.showPicked = true;
-	};
-	$scope.allInter = function(){
-		$scope.allNone();
-		$scope.showInter = true;
-		console.log("Hello");
-	};
-	$scope.allAppoint = function(){
-		$scope.allNone();
-		$scope.showAppoint = true;
-	};
-	$scope.allLead = function(){
-		$scope.allNone();
-		$scope.showLead = true;
-	};
-	$scope.allNone = function(){
-		$scope.showAll = false;
-		$scope.showPicked = false;
-		$scope.showAppoint = false;
-		$scope.showInter = false;
-		$scope.showLead = false;
-	};
-
-	$scope.showScriptNotesFunc = function(){
-		$scope.showScript = false;
-		$scope.showScriptNotes = true;
-	};
-
-	$scope.showScriptFunc = function(){
-		$scope.showScript = true;
-		$scope.showScriptNotes = false;
-	};
-
-});
-
-app.controller("AdminController", function($scope){ 
-
-	$scope.makeAgent = true;
-	$scope.allocateAgent = false
-	$scope.deleteAgent = false;
-	$scope.setUpTwilio = false;
-	$scope.makeClient = false;
-	$scope.deleteClient = false;
-
-	$scope.makeAgentFunc = function(){
-		$scope.setToFalse();
-		$scope.makeAgent = true;
-	};
-
-	$scope.allocateAgentFunc = function(){
-		$scope.setToFalse();	
-		$scope.allocateAgent = true;	
-	};
-
-	$scope.deleteAgentFunc = function(){
-		$scope.setToFalse();	
-		$scope.deleteAgent = true;	
-	};
-
-	$scope.setUpTwilioFunc = function(){
-		$scope.setToFalse();	
-		$scope.setUpTwilio = true;	
-	};
-
-	$scope.makeClientFunc = function(){
-		$scope.setToFalse();	
-		$scope.makeClient = true;	
-	};
-
-	$scope.deleteClientFunc = function(){
-		$scope.setToFalse();	
-		$scope.deleteClient = true;	
-	};
+    return factory;
+}]);
 
 
-	$scope.setToFalse = function(){
-		$scope.makeAgent = false;
-		$scope.allocateAgent = false
-		$scope.deleteAgent = false;
-		$scope.setUpTwilio = false;
-		$scope.makeClient = false;
-		$scope.deleteClient = false;
-	};
 
-});
